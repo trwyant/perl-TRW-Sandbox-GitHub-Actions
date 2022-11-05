@@ -14,6 +14,8 @@ is CLASS->hi(), 'Hello, world!', 'hi()';
 
 is CLASS->hi( 'sailor' ), 'Hello, sailor!', q<hi( 'sailor' )>;
 
+is CLASS->hi( 'boys' ), 'Hello, girls!', 'Intentional error';
+
 done_testing;
 
 1;
