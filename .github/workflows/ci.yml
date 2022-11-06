@@ -85,7 +85,7 @@ jobs:
         perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();'
         perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();' >>$GITHUB_ENV
         echo 'MY_IS_UNIX=1' >>$GITHUB_ENV
-        echo 'MY_IS_WINDOWS=0' >>$GITHUB_ENV
+        echo 'MY_IS_WINDOWS=' >>$GITHUB_ENV
 
       # Credit to James Croft
       # https://www.jamescroft.co.uk/setting-github-actions-environment-variables-in-powershell/
@@ -96,7 +96,7 @@ jobs:
         cpanm File::HomeDir
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();"
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        echo "MY_IS_UNIX=0" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "MY_IS_UNIX=" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "MY_IS_WINDOWS=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     - name: Display local envoronment
