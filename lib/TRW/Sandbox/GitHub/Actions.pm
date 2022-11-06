@@ -52,10 +52,8 @@ the last argument is C<undef>, it returns C<'Hello, world!'>.
 
 =head1 SUPPORT
 
-Support is by the author. Please file bug reports at
-L<https://rt.cpan.org/Public/Dist/Display.html?Name=TRW-Sandbox-GitHub-Actions>,
-L<https://github.com/trwyant/perl-TRW-Sandbox-GitHub-Actions/issues/>, or in
-electronic mail to the author.
+Support is by the author. Please file bug reports via electronic mail to
+the author.
 
 =head1 AUTHOR
 

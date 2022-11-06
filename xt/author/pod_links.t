@@ -13,7 +13,7 @@ eval {
 } or plan skip_all => 'Unable to load Test::Pod::LinkCheck::Lite';
 
 Test::Pod::LinkCheck::Lite->new()->all_pod_files_ok(
-    qw{ blib eg },
+    qw{ blib },
 );
 
 done_testing;
