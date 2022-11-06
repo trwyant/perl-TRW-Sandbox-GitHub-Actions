@@ -87,6 +87,18 @@ jobs:
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();"
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
 
+    - name: Display GITHUB_ENV under Unix
+      if: startsWith( matrix.runner, 'ubuntu-' ) || startsWith( matrix.runner, 'macos-' )
+      run: |
+        echo GITHUB_ENV=$GITHUB_ENV
+        cat $GITHUB_ENV
+
+    - name: Display GITHUB_ENV under Windows
+      if: startsWith( matrix.runner, 'windows-' )
+      run: |
+        echo GITHUB_ENV=$GITHUB_ENV
+        type $GITHUB_ENV
+
     - name: Install Modules
       # Run commands to install the module's declared dependencies.
       run: |
