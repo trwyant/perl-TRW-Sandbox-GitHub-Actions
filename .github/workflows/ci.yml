@@ -80,12 +80,23 @@ jobs:
     # If the following does what I want I should do something like
     # perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
     # and then use $MY_HOME as the home.
-    - name: Find cpanm home
+    - name: Find cpanm home under Unix
+      if: startsWith( matrix.runner, 'ubuntu-' ) || startsWith( matrix.runner, 'macos-' )
+      run: |
+        cpanm -v
+        cpanm File::HomeDir
+        perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();'
+        perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();' >>$GITHUB_ENV
+
+      # Credit to James Croft
+      # https://www.jamescroft.co.uk/setting-github-actions-environment-variables-in-powershell/
+    - name: Find cpanm home under Windows
+      if: startsWith( matrix.runner, 'windows-' )
       run: |
         cpanm -v
         cpanm File::HomeDir
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();"
-        perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
+        perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     - name: Display GITHUB_ENV under Unix
       if: startsWith( matrix.runner, 'ubuntu-' ) || startsWith( matrix.runner, 'macos-' )
