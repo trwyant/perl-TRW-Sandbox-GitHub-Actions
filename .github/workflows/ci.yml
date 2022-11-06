@@ -101,9 +101,9 @@ jobs:
 
     - name: Display local envoronment
       run: |
-        echo MY_HOME=${{ $MY_HOME }}
-        echo MY_IS_UNIX=${{ $MY_IS_UNIX }}
-        echo MY_IS_WINDOWS=${{ $MY_IS_UNIX }}
+        echo MY_HOME=${{ env.MY_HOME }}
+        echo MY_IS_UNIX=${{ env.MY_IS_UNIX }}
+        echo MY_IS_WINDOWS=${{ env.MY_IS_UNIX }}
 
     - name: Install Modules
       # Run commands to install the module's declared dependencies.
