@@ -90,13 +90,11 @@ jobs:
     - name: Display GITHUB_ENV under Unix
       if: startsWith( matrix.runner, 'ubuntu-' ) || startsWith( matrix.runner, 'macos-' )
       run: |
-        echo GITHUB_ENV=$GITHUB_ENV
         cat $GITHUB_ENV
 
     - name: Display GITHUB_ENV under Windows
       if: startsWith( matrix.runner, 'windows-' )
       run: |
-        echo GITHUB_ENV=$env:GITHUB_ENV
         type $env:GITHUB_ENV
 
     - name: Install Modules
