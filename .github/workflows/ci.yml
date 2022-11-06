@@ -77,7 +77,7 @@ jobs:
       run: |
         perl -v
 
-    - name: Find cpanm home under Unix
+    - name: Create local environment variables under Unix
       if: startsWith( matrix.runner, 'ubuntu-' ) || startsWith( matrix.runner, 'macos-' )
       run: |
         cpanm -v
@@ -89,7 +89,7 @@ jobs:
 
       # Credit to James Croft
       # https://www.jamescroft.co.uk/setting-github-actions-environment-variables-in-powershell/
-    - name: Find cpanm home under Windows
+    - name: Create local environment variables under Windows
       if: startsWith( matrix.runner, 'windows-' )
       run: |
         cpanm -v
@@ -99,26 +99,23 @@ jobs:
         echo "MY_IS_UNIX=" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "MY_IS_WINDOWS=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-    - name: Display local envoronment
+    - name: Display local envoronment variables
       run: |
         echo MY_HOME=${{ env.MY_HOME }}
         echo MY_IS_UNIX=${{ env.MY_IS_UNIX }}
         echo MY_IS_WINDOWS=${{ env.MY_IS_WINDOWS }}
 
-    - name: Install Modules
-      # Run commands to install the module's declared dependencies.
+    - name: Install module dependencies
       run: |
         cpanm --with-configure --notest --installdeps .
 
     - name: Run ExtUtils::MakeMaker tests
-      # Run the ExtUtils::MakeMaker toolchain
       run: |
         perl Makefile.PL
         make
         make test
 
     - name: Run Module::Build tests
-      # Run the Module::Build toolchain
       run: |
         perl Build.PL
         ./Build
