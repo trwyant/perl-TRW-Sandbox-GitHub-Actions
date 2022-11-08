@@ -97,10 +97,10 @@ jobs:
       run: |
         cpanm -v
         cpanm File::HomeDir
-        perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$env:GITHUB_ENV
-        echo "MY_IS_UNIX=" >>$env:GITHUB_ENV
-        echo "MY_IS_WINDOWS=1" >>$env:GITHUB_ENV
-        echo "MY_SHELL=pwsh" >>$env:GITHUB_ENV
+        perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
+        echo "MY_IS_UNIX=" >>$GITHUB_ENV
+        echo "MY_IS_WINDOWS=1" >>$GITHUB_ENV
+        echo "MY_SHELL=pwsh" >>$GITHUB_ENV
         echo "PowerShell version:"
         $PSVersionTable.PSVersion
 
