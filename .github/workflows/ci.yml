@@ -39,10 +39,10 @@ jobs:
         include:
           - runner: ubuntu-latest
             # v5.8.8 is the earliest known to work
-            perl: '5.10.0'
+            perl: '5.8.8'
           - runner: macos-latest
             # v5.8.8 is the earliest known to work
-            perl: '5.10.0'
+            perl: '5.8.8'
           - runner: windows-latest
             # v5.26.8 is the earliest known to work
             perl: '5.26.0'
@@ -85,6 +85,7 @@ jobs:
         cpanm -v
         cpanm File::HomeDir
         perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();' >>$GITHUB_ENV
+        perl -le 'print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;' >>$GITHUB_ENV
         echo 'MY_IS_UNIX=1' >>$GITHUB_ENV
         echo 'MY_IS_WINDOWS=' >>$GITHUB_ENV
         echo "MY_SHELL='$SHELL'" >>$GITHUB_ENV
@@ -100,6 +101,7 @@ jobs:
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
         echo "MY_IS_UNIX=" >>$GITHUB_ENV
         echo "MY_IS_WINDOWS=1" >>$GITHUB_ENV
+        perl -le "print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;" >>$GITHUB_ENV
         echo "MY_SHELL=pwsh" >>$GITHUB_ENV
         echo "PowerShell version:"
         $PSVersionTable.PSVersion
@@ -107,6 +109,8 @@ jobs:
     - name: Display local envoronment variables
       run: |
         echo MY_HOME=${{ env.MY_HOME }}
+        echo MY_PERL_IS_5_10=${{ env.MY_PERL_IS_5_10 }}
+        perl -le 'print q<MY_PERL_IS_5_10 (hex) is >, unpack q<H*>, $ENV{MY_PERL_IS_5_10}'
         echo MY_IS_UNIX=${{ env.MY_IS_UNIX }}
         echo MY_IS_WINDOWS=${{ env.MY_IS_WINDOWS }}
         echo MY_SHELL=${{ env.MY_SHELL }}
