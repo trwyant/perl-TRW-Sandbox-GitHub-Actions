@@ -129,6 +129,22 @@ jobs:
       if: true && env.MY_PERL_IS_5_10
       run: "echo Perl is at least 5.10"
 
+    - name: Is Unix
+      if: env.MY_IS_UNIX
+      run: echo "This is some flavor of Unix"
+
+    - name: Not Unix
+      if: "! env.MY_IS_UNIX"
+      run: echo "This is not some flavor of Unix"
+
+    - name: Is Windoes
+      if: env.MY_IS_WINDOWS
+      run: echo "This is Windoes"
+
+    - name: Not Windows
+      if: "! env.MY_IS_WINDOWS"
+      run: echo "This is not Windoes"
+
     - name: Install module dependencies
       run: |
         cpanm --with-configure --notest --installdeps .
