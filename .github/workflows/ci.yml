@@ -79,6 +79,10 @@ jobs:
       run: |
         perl -v
 
+    # NOTE that when used in an if:, the rules for the truthiness of
+    # environment variable values seem to be as follows:
+    # Windows: An empty string is true, and anything else is false (!?!)
+    # Unix: An empty string is false, and anything else is true.
     - name: Create local environment variables under Unix
       if: startsWith( matrix.runner, 'ubuntu-' ) || startsWith( matrix.runner, 'macos-' )
       run: |
@@ -87,7 +91,7 @@ jobs:
         perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();' >>$GITHUB_ENV
         perl -le 'print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;' >>$GITHUB_ENV
         echo 'MY_IS_UNIX=1' >>$GITHUB_ENV
-        echo 'MY_IS_WINDOWS=0' >>$GITHUB_ENV
+        echo 'MY_IS_WINDOWS=' >>$GITHUB_ENV
         echo "MY_SHELL='$SHELL'" >>$GITHUB_ENV
 
     # Because we have PowerShell 7.1 we can use Unix-style redirect. For
@@ -99,9 +103,9 @@ jobs:
         cpanm -v
         cpanm File::HomeDir
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
-        perl -le "print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;" >>$GITHUB_ENV
-        echo "MY_IS_UNIX=0" >>$GITHUB_ENV
-        echo "MY_IS_WINDOWS=1" >>$GITHUB_ENV
+        perl -le "print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? q<> : 1;" >>$GITHUB_ENV
+        echo "MY_IS_UNIX=1" >>$GITHUB_ENV
+        echo "MY_IS_WINDOWS=" >>$GITHUB_ENV
         echo "MY_SHELL=pwsh" >>$GITHUB_ENV
         echo "PowerShell version:"
         $PSVersionTable.PSVersion
