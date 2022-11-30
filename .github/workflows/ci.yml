@@ -91,7 +91,6 @@ jobs:
         echo MY_PERL_IS_5_10=${{ env.MY_PERL_IS_5_10 }}
         echo MY_IS_UNIX=${{ env.MY_IS_UNIX }}
         echo MY_IS_WINDOWS=${{ env.MY_IS_WINDOWS }}
-        echo MY_SHELL=${{ env.MY_SHELL }}
 
     # Non-core toolchain Module::Build needs Pod::Man, which is in
     # distro RRA/podlators. As of podlators-5.00 (2022-11-25) this

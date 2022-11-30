@@ -20,7 +20,6 @@ MY_HOME=$home
 MY_IS_UNIX=$is_unix
 MY_IS_WINDOWS=$is_windows
 MY_PERL_IS_5_10=$is_5_10
-MY_SHELL=$shell
 EOD
 
 __END__
@@ -52,11 +51,8 @@ L<MY_IS_WINDOWS|/MY_IS_WINDOWS>.
 =head2 MY_IS_WINDOWS
 
 True (i.e. C<1>) if running under Windows, and false (i.e. C<''>)
-othewise.
-
-=head2 MY_SHELL
-
-The contents of the environment variable C<SHELL>. For information only.
+othewise. At the moment this is true if C<$^O> is C<'MSWin32'> or
+C<'dos'>.
 
 =head1 AUTHOR
 
