@@ -102,11 +102,16 @@ jobs:
       run: |
         cpanm -v
         cpanm File::HomeDir
-        perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
-        perl -le "print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : 0;" >>$GITHUB_ENV
-        echo "MY_IS_UNIX=0" >>$GITHUB_ENV
-        echo "MY_IS_WINDOWS=1" >>$GITHUB_ENV
-        echo "MY_SHELL=pwsh" >>$GITHUB_ENV
+        perl -MFile::HomeDir -le @'
+        open my $fh, q/>>:encoding(utf-8)/, $ENV{GITHUB_ENV}
+            or die qq/Can not open $ENV{GITHUB_ENV}: $!/;
+        select $fh;
+        print q<MY_HOME=>, File::HomeDir->my_home();
+        print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : 0;
+        print q<MY_IS_UNIX=0>;
+        print q<MY_IS_WINDOWS=1>;
+        print q<MY_SHELL=pwsh>;
+        '@
         echo "PowerShell version:"
         $PSVersionTable.PSVersion
 
