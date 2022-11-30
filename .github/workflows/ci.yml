@@ -87,7 +87,7 @@ jobs:
         perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();' >>$GITHUB_ENV
         perl -le 'print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;' >>$GITHUB_ENV
         echo 'MY_IS_UNIX=1' >>$GITHUB_ENV
-        echo 'MY_IS_WINDOWS=' >>$GITHUB_ENV
+        echo 'MY_IS_WINDOWS=0' >>$GITHUB_ENV
         echo "MY_SHELL='$SHELL'" >>$GITHUB_ENV
 
     # Because we have PowerShell 7.1 we can use Unix-style redirect. For
@@ -99,9 +99,9 @@ jobs:
         cpanm -v
         cpanm File::HomeDir
         perl -MFile::HomeDir -le "print q<MY_HOME=>, File::HomeDir->my_home();" >>$GITHUB_ENV
-        echo "MY_IS_UNIX=" >>$GITHUB_ENV
-        echo "MY_IS_WINDOWS=1" >>$GITHUB_ENV
         perl -le "print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;" >>$GITHUB_ENV
+        echo "MY_IS_UNIX=0" >>$GITHUB_ENV
+        echo "MY_IS_WINDOWS=1" >>$GITHUB_ENV
         echo "MY_SHELL=pwsh" >>$GITHUB_ENV
         echo "PowerShell version:"
         $PSVersionTable.PSVersion
@@ -120,7 +120,7 @@ jobs:
     # requires Perl 5.10. If we are on Perl 5.8 we need to pre-emptively
     # install the next-older version of podlators.
     - name: Install old podlators distro if on old Perl
-      if: true && ! env.MY_PERL_IS_5_10
+      if: "! env.MY_PERL_IS_5_10"
       run: |
         echo "Perl is older than 5.10"
         cpanm RRA/podlators-4.14.tar.gz
