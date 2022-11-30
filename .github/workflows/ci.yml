@@ -83,7 +83,7 @@ jobs:
       run: |
         cpanm -v
         cpanm File::HomeDir
-        perl .github/workflow/environment.PL
+        perl .github/workflows/environment.PL
 
     - name: Display local envoronment variables
       run: |
