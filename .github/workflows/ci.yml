@@ -79,52 +79,16 @@ jobs:
       run: |
         perl -v
 
-    # NOTE that when used in an if:, the rules for the truthiness of
-    # environment variable values seem to be as follows:
-    # Windows: An empty string is true, and anything else is false (!?!)
-    # Unix: An empty string is false, and anything else is true.
-    - name: Create local environment variables under Unix
-      if: startsWith( matrix.runner, 'ubuntu-' ) || startsWith( matrix.runner, 'macos-' )
+    - name: Customize environment
       run: |
         cpanm -v
         cpanm File::HomeDir
-        perl -MFile::HomeDir -l <<'EOD'
-        open my $fh, q/>>:encoding(utf-8)/, $ENV{GITHUB_ENV}
-            or die qq/Can not open $ENV{GITHUB_ENV}: $!/;
-        select $fh;
-        print q<MY_HOME=>, File::HomeDir->my_home();
-        print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;
-        print q<MY_IS_UNIX=1>;
-        print q<MY_IS_WINDOWS=>;
-        print q<MY_SHELL=$ENV{SHELL}>;
-        EOD
-
-    # Because we have PowerShell 7.1 we can use Unix-style redirect. For
-    # 5.1 or earlier that produces UTF16-LE, so we would have to pipe
-    # into Out-File -Encoding utf8 -Append -FilePath $env:GITHUB_ENV
-    - name: Create local environment variables under Windows
-      if: startsWith( matrix.runner, 'windows-' )
-      run: |
-        cpanm -v
-        cpanm File::HomeDir
-        perl -MFile::HomeDir -le @'
-        open my $fh, q/>>:encoding(utf-8)/, $ENV{GITHUB_ENV}
-            or die qq/Can not open $ENV{GITHUB_ENV}: $!/;
-        select $fh;
-        print q<MY_HOME=>, File::HomeDir->my_home();
-        print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;
-        print q<MY_IS_UNIX=>;
-        print q<MY_IS_WINDOWS=1>;
-        print q<MY_SHELL=pwsh>;
-        '@
-        echo "PowerShell version:"
-        $PSVersionTable.PSVersion
+        perl .github/workflow/environment.PL
 
     - name: Display local envoronment variables
       run: |
         echo MY_HOME=${{ env.MY_HOME }}
         echo MY_PERL_IS_5_10=${{ env.MY_PERL_IS_5_10 }}
-        perl -le 'print q<MY_PERL_IS_5_10 (hex) is >, unpack q<H*>, $ENV{MY_PERL_IS_5_10}'
         echo MY_IS_UNIX=${{ env.MY_IS_UNIX }}
         echo MY_IS_WINDOWS=${{ env.MY_IS_WINDOWS }}
         echo MY_SHELL=${{ env.MY_SHELL }}
