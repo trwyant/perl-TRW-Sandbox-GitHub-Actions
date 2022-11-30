@@ -88,11 +88,16 @@ jobs:
       run: |
         cpanm -v
         cpanm File::HomeDir
-        perl -MFile::HomeDir -le 'print q<MY_HOME=>, File::HomeDir->my_home();' >>$GITHUB_ENV
-        perl -le 'print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : 0;' >>$GITHUB_ENV
-        echo 'MY_IS_UNIX=1' >>$GITHUB_ENV
-        echo 'MY_IS_WINDOWS=0' >>$GITHUB_ENV
-        echo "MY_SHELL='$SHELL'" >>$GITHUB_ENV
+        perl -MFile::HomeDir -l <<'EOD'
+        open my $fh, q/>>:encoding(utf-8)/, $ENV{GITHUB_ENV}
+            or die qq/Can not open $ENV{GITHUB_ENV}: $!/;
+        select $fh;
+        print q<MY_HOME=>, File::HomeDir->my_home();
+        print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;
+        print q<MY_IS_UNIX=1>;
+        print q<MY_IS_WINDOWS=>;
+        print q<MY_SHELL=$ENV{SHELL}>;
+        EOD
 
     # Because we have PowerShell 7.1 we can use Unix-style redirect. For
     # 5.1 or earlier that produces UTF16-LE, so we would have to pipe
@@ -107,8 +112,8 @@ jobs:
             or die qq/Can not open $ENV{GITHUB_ENV}: $!/;
         select $fh;
         print q<MY_HOME=>, File::HomeDir->my_home();
-        print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : 0;
-        print q<MY_IS_UNIX=0>;
+        print q<MY_PERL_IS_5_10=>, qq<$]> >= 5.010 ? 1 : q<>;
+        print q<MY_IS_UNIX=>;
         print q<MY_IS_WINDOWS=1>;
         print q<MY_SHELL=pwsh>;
         '@
@@ -129,29 +134,29 @@ jobs:
     # requires Perl 5.10. If we are on Perl 5.8 we need to pre-emptively
     # install the next-older version of podlators.
     - name: Install old podlators distro if on old Perl
-      if: env.MY_PERL_IS_5_10 == 0
+      if: "! env.MY_PERL_IS_5_10"
       run: |
         echo "Perl is older than 5.10"
         cpanm RRA/podlators-4.14.tar.gz
 
     - name: Not on old perl
-      if: env.MY_PERL_IS_5_10 != 0
+      if: env.MY_PERL_IS_5_10
       run: "echo Perl is at least 5.10"
 
     - name: Is Unix
-      if: env.MY_IS_UNIX != 0
+      if: env.MY_IS_UNIX
       run: echo "This is some flavor of Unix"
 
     - name: Not Unix
-      if: env.MY_IS_UNIX == 0
+      if: "! env.MY_IS_UNIX"
       run: echo "This is not some flavor of Unix"
 
     - name: Is Windoes
-      if: env.MY_IS_WINDOWS != 0
+      if: env.MY_IS_WINDOWS
       run: echo "This is Windoes"
 
     - name: Not Windows
-      if: env.MY_IS_WINDOWS == 0
+      if: "! env.MY_IS_WINDOWS"
       run: echo "This is not Windoes"
 
     - name: Install module dependencies
@@ -173,11 +178,11 @@ jobs:
     # The following technique from Gabor Szabo. Thanks:
     # https://perlmaven.com/install-developer-dependencies-first-test-css
     - name: Show cpanm install log under Unix
-      if: failure() && env.MY_IS_UNIX != 0
+      if: failure() && env.MY_IS_UNIX
       run: cat $MY_HOME/.cpanm/work/*/build.log
 
     - name: Show cpanm install log under Windows
-      if: failure() && env.MY_IS_WINDOWS != 0
+      if: failure() && env.MY_IS_WINDOWS
       run: |
         $dirs = Get-ChildItem "$env:MY_HOME\.cpanm\work\"
         foreach ( $d in $dirs ) {
