@@ -10,7 +10,13 @@ use Test::More 0.88;	# Because of done_testing();
 is scalar `echo Hello world.`, "Hello world.\n", 'Back ticks'
     or diag exit_code();
 
-{
+SKIP: {
+    {
+	AmigaOS	=> 1,
+	'RISC OS'	=> 1,
+	VMS	=> 1,
+    }->{$^O}
+	and skip "Fork command via -| does not work under $^O", 1;
     no warnings qw{ qw };
     open my $fh, '-|', qw{ echo Hello, sailor. }
 	or do {
@@ -27,9 +33,10 @@ SKIP: {
     {
 	AmigaOS	=> 1,
 	'RISC OS'	=> 1,
+	MSWin32	=> 1,	# Not so documented, but tried to run '-'.
 	VMS	=> 1,
     }->{$^O}
-	and skip "Fork does not work under $^O", 1;
+	and skip "Fork self via -| does not work under $^O", 1;
 
 
     my $pid = open my $fh, '-|';
