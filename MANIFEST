@@ -12,6 +12,7 @@ META.json
 META.yml
 README
 t/basic.t
+t/file-temp.t
 t/hi.t
 t/shell.t
 xt/author/changes.t

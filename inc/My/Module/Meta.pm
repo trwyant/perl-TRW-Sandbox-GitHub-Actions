@@ -32,6 +32,7 @@ sub author {
 sub build_requires {
     return +{
 	'Test::More'	=> 0.88,	# Because of done_testing().
+	'Test2::V0'	=> 0,
     };
 }
 
@@ -146,6 +147,7 @@ sub requires {
 ##  }
     return +{
 	'Carp'		=> 0,
+	'File::Temp'	=> 0,
 	constant	=> 0,
 	strict		=> 0,
 	warnings	=> 0,

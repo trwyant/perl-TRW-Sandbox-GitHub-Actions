@@ -7,6 +7,8 @@ use warnings;
 
 use Test::More 0.88;	# Because of done_testing();
 
+plan skip_all => 'Not interested in shell processing';
+
 is scalar `echo Hello world.`, "Hello world.\n", 'Back ticks'
     or diag exit_code();
 
