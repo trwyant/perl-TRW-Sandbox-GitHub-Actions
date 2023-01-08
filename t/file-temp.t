@@ -25,13 +25,12 @@ diag '';
 
 # seek $temp, 0, 0;
 
-diag ' Input layers:';
-diag "    $_" for PerlIO::get_layers( $temp );
-
-
 my $got = do {
+    open my $fh, '<', $temp->filename();
+    diag ' Input layers:';
+    diag "    $_" for PerlIO::get_layers( $fh );
     local $/ = undef;
-    <$temp>;
+    <$fh>;
 };
 
 is $got, WANT, 'Got back what we wrote'
