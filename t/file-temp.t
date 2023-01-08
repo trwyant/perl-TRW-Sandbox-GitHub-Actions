@@ -23,18 +23,27 @@ diag '';
     close $fh;
 }
 
+# seek $temp, 0, 0;
+
 diag ' Input layers:';
 diag "    $_" for PerlIO::get_layers( $temp );
 
-
-seek $temp, 0, 0;
 
 my $got = do {
     local $/ = undef;
     <$temp>;
 };
 
-is $got, WANT, 'Got back what we wrote';
+is $got, WANT, 'Got back what we wrote'
+    or do {
+    my ( $hexdump, $quote ) = $^O eq 'MSWin32' ?
+	( qw{ tools/hexdump.exe " } ) :
+	( qw{ hexdump ' } );
+    my $path = $temp->filename();
+    my $cmd = "$hexdump -C ${quote}${path}${quote}";
+    diag $cmd;
+    diag `$cmd`;
+};
 
 done_testing;
 

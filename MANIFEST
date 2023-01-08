@@ -15,6 +15,8 @@ t/basic.t
 t/file-temp.t
 t/hi.t
 t/shell.t
+tools/README.md
+tools/hexdump.exe
 xt/author/changes.t
 xt/author/critic.t
 xt/author/executable.t
