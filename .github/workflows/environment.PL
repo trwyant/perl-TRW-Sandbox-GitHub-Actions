@@ -5,6 +5,7 @@ use 5.006002;
 use strict;
 use warnings;
 
+use Config;
 use File::Spec;
 use Getopt::Long;
 use version;
@@ -53,6 +54,7 @@ sub compute_environment {
         MY_IS_GITHUB_ACTION => 1,
         MY_IS_UNIX          => $is_unix,
         MY_IS_WINDOWS       => $is_windows,
+        MY_MAKE             => $Config{make},
         MY_WANT_POD_MAN     => want_pod_man(),
     );
 
