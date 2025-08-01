@@ -62,6 +62,9 @@ sub compute_environment {
         and print 'Windows home: ', my_home(), "\n";
     print "$_=$ENV{$_}\n" for grep { m/ \A PERL /smx } sort keys %ENV;
 
+    $is_windows
+        and $my_home =~ tr|\\|/|;
+
     my @want_modules = want_modules();
     my %env = (
         MY_HOME             => $my_home,
@@ -73,9 +76,6 @@ sub compute_environment {
 
     $is_windows
         and @env{ qw{ LINES COLUMNS } } = ( 24, 80 );
-
-    $is_windows
-        and $my_home =~ tr|\\|/|;
 
     find_logs( $my_home );
 
