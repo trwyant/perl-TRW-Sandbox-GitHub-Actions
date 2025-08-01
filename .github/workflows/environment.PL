@@ -50,13 +50,15 @@ sub compute_environment {
         eval {
             require File::HomeDir;
             $my_home = File::HomeDir->my_home();
-            print "Home from File::HomeDir\n";
+            print "Home from $File::HomeDir::IMPLEMENTED_BY\n";
             1;
         } or do {
             $my_home = $ENV{HOME};
             print "Home from \$HOME\n";
         };
     }
+    $is_windows
+        and print 'Windows home: ', my_home(), "\n";
     my @want_modules = want_modules();
     my %env = (
         MY_HOME             => $my_home,
@@ -70,6 +72,34 @@ sub compute_environment {
         and @env{ qw{ LINES COLUMNS } } = ( 24, 80 );
 
     return \%env;
+}
+
+# NOTE this is verbatim from File::HomeDir::Windows
+sub my_home
+{
+    my $class = shift;
+
+    # A lot of unix people and unix-derived tools rely on
+    # the ability to overload HOME. We will support it too
+    # so that they can replace raw HOME calls with File::HomeDir.
+    if (exists $ENV{HOME} and defined $ENV{HOME} and length $ENV{HOME})
+    {
+        return $ENV{HOME};
+    }
+
+    # Do we have a user profile?
+    if (exists $ENV{USERPROFILE} and $ENV{USERPROFILE})
+    {
+        return $ENV{USERPROFILE};
+    }
+
+    # Some Windows use something like $ENV{HOME}
+    if (exists $ENV{HOMEDRIVE} and exists $ENV{HOMEPATH} and $ENV{HOMEDRIVE} and $ENV{HOMEPATH})
+    {
+        return File::Spec->catpath($ENV{HOMEDRIVE}, $ENV{HOMEPATH}, '',);
+    }
+
+    return undef;
 }
 
 # FIXME Not all my distros need HTML-Tagset. Figure out a way to handle
