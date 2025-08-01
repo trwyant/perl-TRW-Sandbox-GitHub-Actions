@@ -50,6 +50,7 @@ sub compute_environment {
         eval {
             require File::HomeDir;
             $my_home = File::HomeDir->my_home();
+            no warnings qw{ once };
             print "Home from $File::HomeDir::IMPLEMENTED_BY\n";
             1;
         } or do {
@@ -59,6 +60,8 @@ sub compute_environment {
     }
     $is_windows
         and print 'Windows home: ', my_home(), "\n";
+    print "$_=$ENV{$_}\n" for grep { m/ \A PERL /smx } sort keys %ENV;
+
     my @want_modules = want_modules();
     my %env = (
         MY_HOME             => $my_home,
