@@ -123,17 +123,7 @@ jobs:
 
     # The following technique from Gabor Szabo. Thanks:
     # https://perlmaven.com/install-developer-dependencies-first-test-css
-    - name: Show cpanm install log under Unix
-      if: failure() && env.MY_IS_UNIX
+    - name: Show cpanm install log
+      if: failure()
+      shell: bash
       run: cat $MY_HOME/.cpanm/work/*/build.log
-
-    - name: Show cpanm install log under Windows
-      if: failure() && env.MY_IS_WINDOWS
-      run: |
-        $dirs = Get-ChildItem "$env:MY_HOME\\.cpanm\\work\\"
-        foreach ( $d in $dirs ) {
-            $file = $d.FullName + "\\build.log"
-            echo ""
-            echo $file
-            type $file
-        }
