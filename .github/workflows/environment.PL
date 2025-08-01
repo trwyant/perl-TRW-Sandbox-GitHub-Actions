@@ -51,7 +51,7 @@ sub compute_environment {
             require File::HomeDir;
             $my_home = File::HomeDir->my_home();
             no warnings qw{ once };
-            print "Home from $File::HomeDir::IMPLEMENTED_BY\n";
+            print "Home from $File::HomeDir::IMPLEMENTED_BY is $my_home\n";
             1;
         } or do {
             $my_home = $ENV{HOME};
@@ -73,6 +73,11 @@ sub compute_environment {
 
     $is_windows
         and @env{ qw{ LINES COLUMNS } } = ( 24, 80 );
+
+    $is_windows
+        and $my_home =~ tr|\\|/|;
+
+    find_logs( $my_home );
 
     return \%env;
 }
@@ -103,6 +108,45 @@ sub my_home
     }
 
     return undef;
+}
+
+sub find_logs {
+    my ( $path ) = @_;
+    use File::Glob qw{ bsd_glob };
+    check( $path )
+        or return;
+    my @parts = qw{ .cpanm work * build.log };
+    foreach ( @parts ) {
+        $path = "$path/$_";
+        if ( $_ eq '*' ) {
+            my @glob = bsd_glob( $path )
+                or do {
+                print "Glob '$path' found no files\n";
+                return;
+            };
+            if ( @glob > 1 ) {
+                print "Found the following files, choosing first:\n";
+                print "    $_\n" for @glob;
+            }
+            $path = $glob[0];
+            print "'$path' exists\n";
+        } else {
+            check( $path )
+                or return;
+        }
+    }
+    return;
+}
+
+sub check {
+    my ( $path ) = @_;
+    if ( -e $path ) {
+        print "'$path' exists\n";
+        return 1;
+    } else {
+	print "'$path' does not exist\n";
+        return 0;
+    }
 }
 
 # FIXME Not all my distros need HTML-Tagset. Figure out a way to handle
